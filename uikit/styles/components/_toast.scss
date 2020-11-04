@@ -1,0 +1,83 @@
+.p-notices {
+  position: fixed;
+  display: flex;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2em;
+  overflow: hidden;
+  z-index: 999999;
+  pointer-events: none;
+  .p-toast {
+    display: inline-flex;
+    animation-duration: $speed-slow;
+    margin: 0.5em 0;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+    //border-radius: 2em;
+    padding: 0.75em 1.5em;
+    pointer-events: auto;
+    opacity: 0.92;
+    max-width: 600px;
+    color: white;
+    &.is-dark {
+      background-color: $grey-darker;
+    }
+    &.is-default {
+      background-color: #e4eaec;
+      color: #76838f;
+    }
+    &.is-primary {
+      background-color: #3e8ef7;
+    }
+    &.is-success {
+      background-color: #11c26d;
+    }
+
+    &.is-danger {
+      background-color: #ff4c52;
+    }
+
+    &.is-info {
+      background-color: #0bb2d4;
+    }
+
+    &.is-warning {
+      background-color: #eb6709;
+    }
+
+    // Modifiers
+    &.is-top,
+    &.is-bottom {
+      align-self: center;
+    }
+    &.is-top-right,
+    &.is-bottom-right {
+      align-self: flex-end;
+    }
+    &.is-top-left,
+    &.is-bottom-left {
+      align-self: flex-start;
+    }
+    &.is-toast {
+      opacity: 0.92;
+    }
+  }
+
+  // Modifiers
+  &.is-top {
+    flex-direction: column;
+  }
+  &.is-bottom {
+    flex-direction: column-reverse;
+  }
+  &.has-custom-container {
+    position: absolute;
+  }
+
+  @include mobile {
+    padding: 0;
+    position: fixed !important;
+  }
+}

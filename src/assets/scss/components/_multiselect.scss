@@ -1,0 +1,59 @@
+.multiselect.multiselect-custom {
+  width: max-content;
+  min-height: auto;
+  height: 2.573rem;
+  .multiselect__content-wrapper {
+    width: fit-content;
+  }
+   .multiselect__option {
+    width: 100%;
+  }
+  .multiselect__select {
+    height: 2.573rem;
+  }
+  .multiselect__tags {
+    min-height: auto;
+    height: 2.573rem;
+    padding: 0.429rem 2.5rem 0.429rem 1rem;
+    font-size: 1rem;
+    line-height: 1.57143;
+  }
+  .multiselect__input,
+  .multiselect__single {
+    min-height: auto;
+    font-size: 1rem;
+    line-height: 1.57143;
+    margin-bottom: 0;
+    padding-left: 0;
+    white-space: nowrap;
+  }
+  .multiselect__placeholder {
+    margin-bottom: 8px;
+    padding-top: 0;
+    white-space: nowrap;
+  }
+  .multiselect__option--highlight {
+    background: #3e8ef7;
+    &:after {
+      background: #3e8ef7;
+    }
+    &.multiselect__option--selected {
+      background: #ff6a6a;
+      &:after {
+        background: #ff6a6a;
+      }
+    }
+  }
+  .multiselect__spinner {
+    height: 2.4rem;
+  }
+  .multiselect__spinner:after, .multiselect__spinner:before {
+    border-top-color: #3e8ef7;
+  }
+  &.is-fullwidth {
+    width: 100%;
+    .multiselect__content-wrapper {
+      width: 100%;
+    }
+  }
+}

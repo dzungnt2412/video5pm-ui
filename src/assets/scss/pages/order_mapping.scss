@@ -1,0 +1,13 @@
+
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
+.btn-delete-option {
+  color: $color-red-600;
+  text-decoration: underline;
+  &:hover {
+    color: $color-red-600;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,38 @@
+ul.timeline {
+  list-style-type: none;
+  position: relative;
+  color: #212b36;
+}
+ul.timeline:before {
+  content: ' ';
+  background: #d4d9df;
+  display: inline-block;
+  position: absolute;
+  left: 29px;
+  width: 2px;
+  height: 100%;
+  z-index: 400;
+}
+ul.timeline > li {
+  margin: 20px 0 30px 20px;
+}
+ul.timeline > li:before {
+  content: ' ';
+  display: inline-block;
+  position: absolute;
+  border-radius: 50%;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  z-index: 400;
+  border: 3px solid #ebeef0;
+  background-color: #c3cfd8;
+}
+.timeline-title {
+  margin: 0;
+  line-height: 1.8;
+  span {
+    font-size: 12px;
+    color: #76838f;
+  }
+}

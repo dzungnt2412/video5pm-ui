@@ -1,0 +1,63 @@
+{
+  "name": "vue2-daterange-picker",
+  "version": "0.3.1",
+  "description": "Vue2 date range picker based on https://github.com/dangrossman/bootstrap-daterangepicker (no jQuery)",
+  "author": "Nikola Kostadinov <nikolakk@gmail.com>",
+  "main": "dist/vue2-daterange-picker.umd.min.js",
+  "jsnext:main": "dist/vue2-daterange-picker.umd.min.js",
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Innologica/vue2-daterange-picker"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "components:parse": "node ./docs/.scripts/parse.js",
+    "components:watch": "watch \"npm run components:parse\" ./src",
+    "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib --name vue2-daterange-picker ./src/index.js",
+    "docs:dev": "concurrently \"npm run components:watch\" \"vuepress dev docs\"",
+    "docs:build": "vuepress build docs",
+    "prepublishOnly": "npm run lib",
+    "unit": "vue-cli-service test:unit"
+  },
+  "dependencies": {
+    "moment": "^2.24.0",
+    "vue": "^2.6.10",
+    "vue-clickaway": "^2.2.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.6.0",
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-eslint": "^3.8.0",
+    "@vue/cli-plugin-unit-mocha": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-eslint": "^10.0.1",
+    "chai": "^4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10",
+    "babel-preset-vue": "^2.0.2",
+    "@babel/core": "^7.4.5",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
+    "vuepress": "^0.14.11",
+    "webpack": "^4.35.0",
+    "concurrently": "^4.1.0",
+    "@vuedoc/parser": "^1.4.0",
+    "markdown-it-footnote": "^3.0.1",
+    "acorn": "^6.1.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

@@ -1,0 +1,156 @@
+.design-page {
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .user-resource {
+    min-width: 100px;
+    .multiselect__tags {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .design-page {
+    .user-resource {
+      min-width: 300px;
+    }
+  }
+}
+
+.list-design {
+  margin-top: -1.5rem;
+  margin-left: -1.5rem;
+}
+.list-design-item {
+  padding-top: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.list-design-item-content-wrapper {
+  padding: 10px;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  img {
+    width: 20px;
+    margin-top: -0.125rem;
+    margin-right: 0.5rem;
+  }
+  a {
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+  }
+}
+
+.gallery-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-top: 100%;
+  img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: none;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 1;
+  }
+  &__actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    z-index: 2;
+  }
+  .p-icon {
+    font-size: 1.7rem;
+    color: white;
+  }
+  &:hover {
+    &:before {
+      transition: background 0.2s ease-out;
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .gallery-item__actions {
+      transition: opacity 0.2s ease-out;
+      opacity: 1;
+    }
+  }
+}
+
+.design-uploader {
+  .el-upload {
+    display: block;
+  }
+  .el-upload-dragger {
+    width: 100%;
+  }
+}
+
+.gallery-list {
+  margin: 20px 0;
+}
+
+.gallery-list__item {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.gallery-list__item-top {
+  margin-bottom: 5px;
+}
+
+.gallery-list__item-group {
+  display: flex;
+  margin-right: 40px;
+  text-overflow: ellipsis;
+  white-space: pre-line;
+  p {
+    font-weight: 400;
+    margin-top: 0;
+    display: inline-block;
+  }
+}
+
+.gallery-list__item-group--thumbnail {
+  flex: 1 0 50px;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+}
+
+.gallery-list__item-label {
+  position: absolute;
+  right: 5px;
+  top: 0;
+}

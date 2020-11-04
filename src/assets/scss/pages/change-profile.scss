@@ -1,0 +1,11 @@
+.annotated-section {
+  padding-top: 1rem;
+  // border-top: 1px solid #dfe3e8;
+  &__title {
+    font-size: 1.143rem;
+    line-height: 1.5;
+    margin: 0;
+    padding: 1rem 0;
+    color: #363e43;
+  }
+}
