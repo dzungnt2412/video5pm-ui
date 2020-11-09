@@ -13,7 +13,7 @@
         <form @submit.prevent="onSignIn">
           <div class="qinput">
             <label class=" font-weight-bold">Email or username</label>
-            <p-input placeholder="you@example.com" type="email" />
+            <p-input placeholder="you@example.com" v-model="email" />
           </div>
           <div>
             <label class=" font-weight-bold">Password</label>
@@ -21,6 +21,7 @@
               placeholder="Password"
               prefixIcon="search"
               type="password"
+              v-model="password"
             />
           </div>
           <button class="mt-40 btn btn-special btn-primary">

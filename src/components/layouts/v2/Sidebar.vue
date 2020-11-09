@@ -52,7 +52,7 @@ export default {
         {
           title: 'Create video',
           icon: 'image',
-          route: { name: 'container-list' },
+          route: { name: 'create-video' },
         },
         {
           title: 'My video',

@@ -78,10 +78,11 @@
       <textarea
         :class="formControlClasses"
         v-bind="$attrs"
-        :value="value"
         :disabled="disabled"
         :readonly="readonly"
         :autocomplete="autocomplete"
+        rows="6"
+        v-model="input"
         @change="handleChange"
         ref="textarea"
       >
@@ -105,7 +106,10 @@
           :key="index"
           class="checkList"
         >
-          <i class="wb-check" :class="{ success: checkValidate(item.message) }">
+          <i
+            class="wb-search"
+            :class="{ success: checkValidate(item.message) }"
+          >
           </i>
           {{ item.message }}</p
         >
@@ -216,51 +220,52 @@ export default {
       input: '',
       validatePassword: [
         {
-          message: 'Phải có tối thiểu một ký tự viết hoa.',
+          message: 'Must contain at least one capital letter.',
           regex: /[A-Z]+/,
           result: true,
         },
         {
-          message: 'Phải có tối thiểu một chữ số.',
+          message: 'Must contain at least one digit.',
           regex: /[0-9]+/,
           result: true,
         },
         {
-          message: 'Phải có tối thiểu sáu ký tự.',
+          message: 'Password is too short (minimum is 6 characters)',
           regex: /.{6,}/,
           result: true,
         },
         {
-          message: 'Tối đa năm mươi ký tự.',
+          message: 'Password is too long (maximum is 50 characters)',
           regex: /^[\w]{0,50}$/,
           result: true,
         },
         {
-          message: 'Không được có ký tự đặc biệt.',
+          message: 'Not contain special characters.',
           regex: /[^\w]/,
           result: false,
         },
       ],
       validateEmail: [
         {
-          message: 'Chưa đúng định dạng email.(Ví dụ : abc@gmail.com)',
+          message:
+            'Email must be in a valid email format (e.g., you@example.com).',
           regex: /^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/,
           result: true,
         },
       ],
       validateUsername: [
         {
-          message: 'Không được có ký tự đặc biệt.',
+          message: 'Not contain special characters.',
           regex: /[^\w]/,
           result: false,
         },
         {
-          message: 'Phải có tối thiểu sáu ký tự.',
-          regex: /.{6,}/,
+          message: 'Username is too short (minimum is 5 characters).',
+          regex: /.{5,}/,
           result: true,
         },
         {
-          message: 'Tối đa năm mươi ký tự.',
+          message: 'Username is too long (maximum is 50 characters)',
           regex: /^[\w]{0,50}$/,
           result: true,
         },
@@ -393,6 +398,14 @@ export default {
 
     clear() {
       this.$emit('input', '')
+    },
+  },
+  watch: {
+    input: {
+      handler() {
+        this.$emit('data', this.input)
+      },
+      deep: true,
     },
   },
 }
