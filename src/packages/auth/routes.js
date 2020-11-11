@@ -43,4 +43,32 @@ export const routes = [
         import(/* webpackChunkName: "forgot" */ './views/Forgot.vue')
       ),
   },
+  {
+    path: '/verify-email',
+    name: 'verify-email',
+    meta: {
+      title: 'Verify Email',
+      layout: 'full-page',
+      class: 'page-login-v3',
+      ...noAuthRequired(),
+    },
+    component: () =>
+      lazyLoadView(
+        import(/* webpackChunkName: "verify-email" */ './views/VerifyEmail.vue')
+      ),
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    meta: {
+      title: 'Reset Password',
+      layout: 'full-page',
+      class: 'page-login-v3',
+      ...noAuthRequired(),
+    },
+    component: () =>
+      lazyLoadView(
+        import(/* webpackChunkName: "forgot" */ './views/ResetPassword.vue')
+      ),
+  },
 ]

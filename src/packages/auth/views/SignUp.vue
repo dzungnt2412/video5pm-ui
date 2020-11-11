@@ -1,79 +1,186 @@
 <template>
   <div class="page vertical-align">
-    <div class="vertical-align-middle mt-80">
+    <div class="vertical-align-middle">
       <div class="header mb-40">
-        <h3>
-          <b>Sign up to Lionnix</b>
-        </h3>
-        <p>Best quality. Lowest base cost. The most optimal system.</p>
+        <h2 class="header-2">
+          Sign up to Lionnix
+        </h2>
+        <span class="brand-text-little"
+          >Best quality. Lowest base cost. The most optimal system.</span
+        >
       </div>
 
-      <div class="body mb-40">
-        <p>
+      <form :model="form" class="" @submit.prevent="onSignUp">
+        <div class="mb-16">
           <label class="font-weight-bold">Email</label>
-          <p-input placeholder="you@example.com" type="email" />
-        </p>
-        <p>
+          <p-input
+            placeholder="you@example.com"
+            type="email"
+            validate="on"
+            v-model="user.email"
+            @status="checkEmail($event)"
+            @keyup.enter="onSignUp"
+            :required="requiredEmail"
+          />
+        </div>
+        <div class="mb-16">
           <label class="font-weight-bold">Username</label>
-          <p-input placeholder="Username" type="username" />
-        </p>
-        <p>
+          <p-input
+            placeholder="Username"
+            type="username"
+            validate="on"
+            v-model="user.username"
+            @keyup.enter="onSignUp"
+            @status="checkUsername($event)"
+            :required="requiredUsername"
+          />
+        </div>
+        <div class="mb-16">
           <label class="font-weight-bold">Password</label>
           <p-input
             placeholder="Enter password"
-            prefixIcon="search"
+            hiddenPass="on"
             type="password"
+            validate="on"
+            v-model="user.password"
+            @keyup.enter="onSignUp"
+            :required="requiredPassword"
+            @status="checkPassword($event)"
           />
-        </p>
-      </div>
+        </div>
+        <div class="mb-16">
+          <div class="row">
+            <div class="col-md-6 p-0">
+              <label class="font-weight-bold">Shop name</label>
+              <p-input
+                placeholder="Your shop name"
+                type="shopname"
+                validate="on"
+                v-model="shop_name"
+                @keyup.enter="onSignUp"
+                :required="requiredShopname"
+                @status="checkShopname($event)"
+              />
+            </div>
+            <div class="col-md-6 pr-0">
+              <label class="font-weight-bold">Phone</label>
+              <select-phone
+                class="select-phone"
+                :current-number="numberC"
+                v-model="country_code"
+                :list-number="listNumber"
+              />
+              <p-input
+                placeholder="Ex. 923 456 789"
+                type="phonenumber"
+                validate="on"
+                v-model="user.phone_number"
+                @keyup.enter="onSignUp"
+                :required="requiredPhonenumber"
+                @status="checkPhonenumber($event)"
+              />
+            </div>
+          </div>
+        </div>
 
-      <div class="captcha mb-20">
-        <vue-recaptcha
-          sitekey="6Ld8Gt0ZAAAAAEjG7RBzGB-dmL5nQ8plAt1YvHpm"
-          :loadRecaptchaScript="true"
+        <div class="captcha mt-40 mb-20">
+          <vue-recaptcha
+            ref="recapcha"
+            @verify="onVerify"
+            :sitekey="`${recapchaKey}`"
+            :loadRecaptchaScript="true"
+            @expired="onCaptchaExpired"
+          >
+          </vue-recaptcha>
+          <span class="invalid-error" v-if="check == false">
+            Please check the captcha
+          </span>
+        </div>
+
+        <span class="font-size-12"
+          >By creating an account, you agree to Lionnix's
+          <a target="_blank" href="https://lionnix.com/FAQ">Terms of Service</a
+          >.</span
         >
-        </vue-recaptcha>
-      </div>
+        <p-button
+          class="btn btn-special btn-primary mt-20 "
+          :loading="isLoading"
+          @click="onSignUp"
+        >
+          Sign up
+        </p-button>
+      </form>
 
-      <span class="font-size-12"
-        >By creating an account, you agree to Lionnix's
-        <a href="">Terms of Service</a>.</span
-      >
-      <button class="btn btn-special btn-primary mt-20 mb-20">
-        Sign up
-      </button>
-
-      <p class="text-center">
+      <p class="text-center mb-80">
         Already have an account?
         <router-link
           :to="{ name: 'sign-in' }"
-          class="font-weight-600"
-          style="color: #37393E;"
+          class="font-weight-600 creatAcount"
           >Sign in</router-link
         >
       </p>
     </div>
   </div>
 </template>
+<style scoped>
+.select-phone {
+  position: absolute;
+  font-size: 14px !important;
+}
+</style>
 <script>
 import { mapActions } from 'vuex'
 import VueRecaptcha from 'vue-recaptcha'
+import SelectPhone from '@/components/shared/resource/SelectPhone'
 
 export default {
-  components: { VueRecaptcha },
+  components: { VueRecaptcha, SelectPhone },
+
+  computed: {
+    recapchaKey() {
+      return `${process.env.VUE_APP_RECAPCHA_KEY}`
+    },
+  },
+  props: {
+    listNumber: {
+      type: Array,
+      default: () => [{}],
+    },
+  },
+
   data() {
     return {
-      user: {
-        username: null,
-        email: null,
-        phone_number: null,
-        password: null,
-        user_referring_code: null,
+      form: {
+        checkCaptcha: false,
       },
+      check: true,
+      user: {
+        username: '',
+        email: '',
+        password: '',
+        user_referring_code: null,
+        phone_number: '',
+      },
+      shop_name: '',
+      country_code: '',
       isLoading: false,
       isShowSnackbar: false,
       result: { success: true, message: 'Some thing wrong' },
       timeout: null,
+      requiredEmail: false,
+      requiredPassword: false,
+      requiredUsername: false,
+      requiredShopname: false,
+      requiredPhonenumber: false,
+      correctEmail: false,
+      correctPassword: false,
+      correctUsername: false,
+      correctShopname: false,
+      correctPhonenumber: false,
+      numberC: {
+        type: Object,
+        default: () => {},
+      },
     }
   },
   created() {
@@ -81,41 +188,140 @@ export default {
       this.user.user_referring_code = this.$route.query['ref_code']
     }
   },
+
   methods: {
     ...mapActions('auth', ['signUp']),
 
-    async onSignUp() {
-      const validate = await this.$validator.validateAll()
+    checkEmail(e) {
+      if (e) {
+        return (this.correctEmail = true)
+      }
+      return (this.correctEmail = false)
+    },
+    checkUsername(e) {
+      if (e) {
+        return (this.correctUsername = true)
+      }
+      return (this.correctUsername = false)
+    },
+    checkPassword(e) {
+      if (e) {
+        return (this.correctPassword = true)
+      }
+      return (this.correctPassword = false)
+    },
+    checkShopname(e) {
+      if (e) {
+        return (this.correctShopname = true)
+      }
+      return (this.correctShopname = false)
+    },
+    checkPhonenumber(e) {
+      if (e) {
+        return (this.correctPhonenumber = true)
+      }
+      return (this.correctPhonenumber = false)
+    },
 
-      if (!validate) {
+    checkRequired() {
+      let result = true
+      if (this.user.username == '') {
+        this.requiredUsername = true
+        result = false
+      } else {
+        this.requiredUsername = false
+      }
+
+      if (this.user.password == '') {
+        this.requiredPassword = true
+        result = false
+      } else {
+        this.requiredPassword = false
+      }
+
+      if (this.user.email == '') {
+        this.requiredEmail = true
+        result = false
+      } else {
+        this.requiredEmail = false
+      }
+
+      if (this.shop_name == '') {
+        this.requiredShopname = true
+        result = false
+      } else {
+        this.requiredShopname = false
+      }
+
+      if (this.user.phone_number == '') {
+        this.requiredPhonenumber = true
+        result = false
+      } else {
+        this.requiredPhonenumber = false
+      }
+
+      return result
+    },
+
+    onVerify: function(response) {
+      if (response) this.form.checkCaptcha = true
+      this.check = true
+    },
+    onCaptchaExpired: function() {
+      this.form.checkCaptcha = false
+    },
+
+    async onSignUp() {
+      if (!this.checkRequired()) {
+        return
+      }
+      if (
+        this.correctEmail == false ||
+        this.correctUsername == false ||
+        this.correctPassword == false ||
+        this.correctShopname == false ||
+        this.correctPhonenumber == false
+      ) {
         return
       }
 
+      if (this.form.checkCaptcha == false) {
+        this.check = false
+        return
+      }
+      const data = {
+        username: this.user.username,
+        email: this.user.email,
+        password: this.user.password,
+        user_referring_code: this.user.user_referring_code,
+      }
+      if (this.country_code == '') {
+        data.phone_number = '+84' + this.user.phone_number
+      } else {
+        data.phone_number = this.country_code + this.user.phone_number
+      }
       this.isLoading = true
       this.isShowSnackbar = false
-
-      this.result = await this.signUp(this.user)
-
-      if (this.result.success) {
-        this.$toast.open({
-          type: 'success',
-          message:
-            'Tài khoản của bạn đã được tạo thành công, vui lòng liên hệ bộ phận hỗ trợ để kích hoạt tài khoản',
-          duration: 6000,
-        })
-        this.$router.push({ name: 'sign-in' })
-        return
-      }
-      this.$toast.open({
-        type: 'error',
-        message:
-          this.result.message + ' :</br>' + this.result.errors.join('</br>'),
-        duration: 3000000,
-      })
-
+      this.result = await this.signUp({ user: data, shop_name: this.shop_name })
       setTimeout(() => {
         this.isLoading = false
       }, 2000)
+
+      if (this.result.success) {
+        setTimeout(() => {
+          this.$router.push({
+            name: 'verify-email',
+          })
+        }, 2000)
+        return
+      }
+      this.$refs.recapcha.reset()
+      this.form.checkCaptcha = false
+      this.$toast.open({
+        type: 'error',
+        message: this.result.errors.join('</br>'),
+        duration: 3000,
+      })
     },
   },
 }

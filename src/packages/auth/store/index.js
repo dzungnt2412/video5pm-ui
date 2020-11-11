@@ -2,13 +2,15 @@ import { ROLE_SELLER } from '@core/constants'
 import api from '../api'
 import AuthService from '@core/services/auth'
 import Affiliate from '@core/helpers/affiliate'
-
+import { HTTP_STATUS_FORBIDDEN } from '@core/constants/http'
 /**
  * Type
  */
 export const AUTHENTICATE = 'authenticate'
 export const GET_USER = 'getUser'
-
+export const VERIFY_EMAIL = 'verifyEmail'
+export const RESEND_EMAIL = 'resendEmail'
+export const CURRENT_USER = 'currentUser'
 /**
  * State
  */
@@ -42,7 +44,6 @@ export const actions = {
     let response
 
     response = await api.signIn(payload)
-
     if (response && response.access_token) {
       const data = Object.assign({}, response.user, {
         access_token: response.access_token,
@@ -55,9 +56,23 @@ export const actions = {
       }
     }
 
+    if (
+      response &&
+      response.user &&
+      response.statusCode == HTTP_STATUS_FORBIDDEN
+    ) {
+      commit(CURRENT_USER, response.user)
+      return {
+        success: false,
+        message: response.errorMessage || '',
+        userInActive: true,
+      }
+    }
+
     return {
       success: false,
       message: response.errorMessage || '',
+      number_incorrect: response.number_incorrect_password || 0,
     }
   },
 
@@ -73,10 +88,11 @@ export const actions = {
       payload.user_referring_code = Affiliate.getRef()
     }
 
-    payload.username = payload.username.toLowerCase()
+    payload.user.username = payload.user.username.toLowerCase()
     const response = await api.signUp(payload)
 
     if (response && response.user && response.user.id) {
+      commit(CURRENT_USER, response.user)
       return {
         success: true,
       }
@@ -94,6 +110,62 @@ export const actions = {
     commit(AUTHENTICATE, {})
     AuthService.clear()
   },
+
+  // eslint-disable-next-line
+  async forgotPassword({ commit }, payload) {
+    const response = await api.forgot(payload)
+    if (response.success) {
+      return {
+        success: true,
+        message:
+          'Instructions to reset your password have been sent to you. Please check your email.',
+      }
+    }
+
+    return response
+  },
+  // eslint-disable-next-line
+  async resetPassword({ commit }, payload) {
+    const response = await api.resetPass(payload)
+    if (response.success) {
+      return {
+        success: true,
+      }
+    }
+
+    return response
+  },
+
+  async verifyEmail({ commit }, payload) {
+    let response
+    response = await api.verifyEmail(payload)
+
+    if (response && response.access_token) {
+      const data = Object.assign({}, response.user, {
+        access_token: response.access_token,
+      })
+      handleAuthenticated(commit, transformerAuthenticate(data))
+
+      return {
+        success: true,
+        permission: data.role === ROLE_SELLER,
+      }
+    }
+    return {
+      success: false,
+      message: response.errorMessage || '',
+    }
+  },
+  // eslint-disable-next-line
+  async resendEmail({ commit }, payload) {
+    const response = await api.resendEmail(payload)
+
+    if (response.success) {
+      return { success: true }
+    }
+
+    return { success: false }
+  },
 }
 
 /**
@@ -101,6 +173,13 @@ export const actions = {
  */
 export const mutations = {
   [AUTHENTICATE](state, payload) {
+    state.user = payload
+  },
+  [VERIFY_EMAIL](state, payload) {
+    state.user_signUp = payload
+    state.token = payload
+  },
+  [CURRENT_USER](state, payload) {
     state.user = payload
   },
 }

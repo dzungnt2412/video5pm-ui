@@ -19,7 +19,7 @@ export const http = {
       const apiUrl =
         url.indexOf('http') === 0
           ? url
-          : `${process.env.VUE_APP_BASE_API_ENDPOINT}${url}`
+          : `${"http://localhost:8888"}${url}`
       const type = isString(options)
         ? options
         : options.type || RESPONSE_TYPE_JSON

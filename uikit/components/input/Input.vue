@@ -1,12 +1,16 @@
 <template>
   <div :class="wrapperClasses">
-    <template v-if="type !== 'textarea' && type !== 'password'">
+    <template
+      v-if="
+        type !== 'textarea' && type !== 'password' && type !== 'phonenumber'
+      "
+    >
       <div class="input-group-prepend" v-if="$slots.prepend">
         <slot name="prepend"></slot>
       </div>
 
       <i
-        class="form-control-icon"
+        class="form-control-icon form-control-icon-left"
         v-if="prefixIcon"
         :class="`wb-${prefixIcon}`"
       >
@@ -26,6 +30,8 @@
       </i>
 
       <input
+        @focus="focusUsername = true"
+        @blur="focusUsername = false"
         :class="formControlClasses"
         v-bind="$attrs"
         :value="nativeInputValue"
@@ -44,16 +50,42 @@
       </div>
     </template>
 
+    <template v-if="type == 'phonenumber'">
+      <div class="input-group-prepend" v-if="$slots.prepend">
+        <slot name="prepend"></slot>
+      </div>
+
+      <input
+        style="padding-left: 85px"
+        :class="formControlClasses"
+        v-bind="$attrs"
+        :value="nativeInputValue"
+        :disabled="disabled"
+        :readonly="readonly"
+        :autocomplete="autocomplete"
+        @change="handleChange"
+        v-on="listeners"
+        v-model="input"
+        :type="type"
+        name="phonenumber"
+        ref="input"
+      />
+      <div class="input-group-append" v-if="$slots.append">
+        <slot name="append"></slot>
+      </div>
+    </template>
+
     <template v-if="type == 'password'">
       <div class="input-group-prepend" v-if="$slots.prepend">
         <slot name="prepend"></slot>
       </div>
-      <a
+
+      <i
+        v-if="hiddenPass == 'on'"
         class="form-control-icon form-control-icon-right"
+        :class="`wb-${typeInputPassword == 'password' ? 'eye' : 'eye-close'}`"
         @click.prevent="togglePasswordVisibelity()"
-      >
-        <i class="wb-eye"></i>
-      </a>
+      ></i>
 
       <input
         :class="formControlClasses"
@@ -78,11 +110,10 @@
       <textarea
         :class="formControlClasses"
         v-bind="$attrs"
+        :value="value"
         :disabled="disabled"
         :readonly="readonly"
         :autocomplete="autocomplete"
-        rows="6"
-        v-model="input"
         @change="handleChange"
         ref="textarea"
       >
@@ -91,13 +122,34 @@
 
     <span
       class="invalid-error"
-      v-if="!validateField.valid && type != 'username'"
+      v-if="
+        !validateField.valid &&
+          type != 'username' &&
+          validate == 'on' &&
+          required == false
+      "
     >
       {{ validateField.errors[0] }}
     </span>
 
+    <span class="invalid-error" v-if="required == true && type != 'username'">
+      This field is required
+    </span>
+
     <span
-      v-if="type == 'username' && input != '' && validate == 'on'"
+      class="invalid-error"
+      v-if="required == true && type == 'username' && focusUsername == false"
+    >
+      This field is required
+    </span>
+
+    <span
+      v-if="
+        type == 'username' &&
+          focusUsername == true &&
+          validate == 'on' &&
+          this.input != ''
+      "
       class="check-list"
     >
       <div class="hints">
@@ -106,10 +158,7 @@
           :key="index"
           class="checkList"
         >
-          <i
-            class="wb-search"
-            :class="{ success: checkValidate(item.message) }"
-          >
+          <i class="wb-check" :class="{ success: checkValidate(item.message) }">
           </i>
           {{ item.message }}</p
         >
@@ -128,14 +177,25 @@
 
 .check-list {
   width: 100%;
-  margin-top: 10px;
   font-size: 14px;
   color: #37393e;
-  margin-left: 20px;
+  border: 1px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  border-radius: 0px 0px 4px 4px;
+}
+
+.check-list i {
+  color: #dfe3e8;
+  margin-right: 10px;
+}
+.select-phone {
+  position: absolute;
+  font-size: 14px !important;
 }
 
 .success {
-  color: #0554f2;
+  color: #0554f2 !important ;
 }
 
 .input-invalid {
@@ -213,43 +273,42 @@ export default {
       type: Boolean,
       default: false,
     },
+    hiddenPass: {
+      type: String,
+      default: 'off',
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      focusUsername: false,
       typeInputPassword: 'password',
       input: '',
       validatePassword: [
         {
-          message: 'Must contain at least one capital letter.',
-          regex: /[A-Z]+/,
-          result: true,
-        },
-        {
-          message: 'Must contain at least one digit.',
-          regex: /[0-9]+/,
-          result: true,
-        },
-        {
-          message: 'Password is too short (minimum is 6 characters)',
-          regex: /.{6,}/,
-          result: true,
-        },
-        {
-          message: 'Password is too long (maximum is 50 characters)',
-          regex: /^[\w]{0,50}$/,
-          result: true,
-        },
-        {
           message: 'Not contain special characters.',
-          regex: /[^\w]/,
+          regex: /[^A-Za-z\d@$!%*#?& ]/,
           result: false,
+        },
+        {
+          message: "Your password can't start or end with a blank space",
+          regex: /^[ ].*|[ ]$/,
+          result: false,
+        },
+        {
+          message: 'Be between 6-50 characters.',
+          regex: /^.{6,50}$/,
+          result: true,
         },
       ],
       validateEmail: [
         {
           message:
             'Email must be in a valid email format (e.g., you@example.com).',
-          regex: /^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+          regex: /^[a-z0-9A-Z_\\.]{1,32}@[a-z0-9]{2,}(\.[a-z0-9]{2,4}){1,2}$/,
           result: true,
         },
       ],
@@ -260,14 +319,39 @@ export default {
           result: false,
         },
         {
-          message: 'Username is too short (minimum is 5 characters).',
-          regex: /.{5,}/,
+          message: 'Be between 5-50 characters.',
+          regex: /^.{5,50}$/,
+          result: true,
+        },
+      ],
+      validatePhonenumber: [
+        {
+          message: 'Phonenumber is too long (maximum is 20 characters).',
+          regex: /^.{1,20}$/,
           result: true,
         },
         {
-          message: 'Username is too long (maximum is 50 characters)',
-          regex: /^[\w]{0,50}$/,
+          message:
+            'Phone must be in a valid phone number  (e.g., 123 456-789).',
+          regex: /^[-\\s {2}\\./0-9]*$/,
           result: true,
+        },
+        {
+          message: "Your phonenumber can't end with a blank space",
+          regex: /.*[ ]$/,
+          result: false,
+        },
+      ],
+      validateShopName: [
+        {
+          message: 'Be between 1-100 characters.',
+          regex: /^.{1,100}$/,
+          result: true,
+        },
+        {
+          message: 'Shop name must be in a valid shop name format.',
+          regex: /<[^>]*>$/,
+          result: false,
         },
       ],
     }
@@ -279,7 +363,11 @@ export default {
         'input-group',
         this.size ? `input-group-${this.size}` : '',
         {
-          'form-icons': this.prefixIcon || this.suffixIcon || this.isShowClear,
+          'form-icons':
+            this.prefixIcon ||
+            this.suffixIcon ||
+            this.isShowClear ||
+            this.hiddenPass,
         },
         this.type === 'file' ? 'input-group-file' : '',
       ]
@@ -291,12 +379,32 @@ export default {
         {
           rounded: this.rounded,
         },
-        this.type == 'password' && !this.validateField.valid
+        this.type == 'password' &&
+        !this.validateField.valid &&
+        this.validate == 'on'
           ? 'input-invalid'
           : '',
-        this.type == 'email' && !this.validateField.valid
+        this.type == 'email' &&
+        !this.validateField.valid &&
+        this.validate == 'on'
           ? 'input-invalid'
           : '',
+        this.type == 'username' &&
+        !this.validateField.valid &&
+        this.validate == 'on'
+          ? 'input-invalid'
+          : '',
+        this.type == 'shopname' &&
+        !this.validateField.valid &&
+        this.validate == 'on'
+          ? 'input-invalid'
+          : '',
+        this.type == 'phonenumber' &&
+        !this.validateField.valid &&
+        this.validate == 'on'
+          ? 'input-invalid'
+          : '',
+        this.required == true ? 'input-invalid' : '',
       ]
     },
     isShowClear() {
@@ -323,14 +431,13 @@ export default {
     validateField() {
       let errors = []
       if (this.input == '') return { valid: true, errors }
-      if (this.validate == 'off') return { valid: true, errors }
       if (this.type == 'password') {
         for (let condition of this.validatePassword) {
           if (!condition.regex.test(this.input) == condition.result) {
             errors.push(condition.message)
           }
         }
-        if (errors.length === 0) {
+        if (errors.length == 0) {
           return { valid: true, errors }
         } else {
           return { valid: false, errors }
@@ -341,7 +448,7 @@ export default {
             errors.push(condition.message)
           }
         }
-        if (errors.length === 0) {
+        if (errors.length == 0) {
           return { valid: true, errors }
         } else {
           return { valid: false, errors }
@@ -352,7 +459,29 @@ export default {
             errors.push(condition.message)
           }
         }
-        if (errors.length === 0) {
+        if (errors.length == 0) {
+          return { valid: true, errors }
+        } else {
+          return { valid: false, errors }
+        }
+      } else if (this.type == 'phonenumber') {
+        for (let condition of this.validatePhonenumber) {
+          if (!condition.regex.test(this.input) == condition.result) {
+            errors.push(condition.message)
+          }
+        }
+        if (errors.length == 0) {
+          return { valid: true, errors }
+        } else {
+          return { valid: false, errors }
+        }
+      } else if (this.type == 'shopname') {
+        for (let condition of this.validateShopName) {
+          if (!condition.regex.test(this.input) == condition.result) {
+            errors.push(condition.message)
+          }
+        }
+        if (errors.length == 0) {
           return { valid: true, errors }
         } else {
           return { valid: false, errors }
@@ -403,7 +532,7 @@ export default {
   watch: {
     input: {
       handler() {
-        this.$emit('data', this.input)
+        this.$emit('status', this.validateField.valid)
       },
       deep: true,
     },

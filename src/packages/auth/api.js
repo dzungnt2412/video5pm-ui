@@ -7,7 +7,11 @@ export default {
    * @return {*}
    */
   signIn(payload) {
-    return http.post('/auth/sign-in', payload)
+    let formData = new FormData()
+    formData.append('username', payload.username)
+    formData.append('password', payload.password)
+
+    return http.post('/auth', formData )
   },
 
   /**
@@ -16,6 +20,21 @@ export default {
    * @return {*}
    */
   signUp(payload) {
-    return http.post('/auth/sign-up', { user: payload })
+    return http.post('/auth/sign-up/v2', {
+      user: payload.user,
+      shop_name: payload.shop_name,
+    })
+  },
+  forgot(payload) {
+    return http.post('/auth/forgot-password/v2', payload)
+  },
+  resetPass(payload) {
+    return http.post('/auth/reset-password/v2', payload)
+  },
+  verifyEmail(payload) {
+    return http.post('/auth/verify-email/v2', payload)
+  },
+  resendEmail(payload) {
+    return http.post('/auth/resend-email/v2', payload)
   },
 }
