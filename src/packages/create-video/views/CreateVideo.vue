@@ -1,40 +1,45 @@
 <template>
   <div>
-    <div class="order-list-page page">
+    <div class="page-video">
       <div class="text-center">
         <div class="container">
-          <h1 class="jumbotron-heading mt-100">Nhập nội dung</h1>
-          <p class="lead text-muted">Chuyển bài viết của bạn thành video đơn giản nhanh chóng</p>
+          <p class="jumbotron-heading mt-80">Nhập nội dung</p>
+          <p class="text-description"
+            >Chuyển bài viết của bạn thành video đơn giản nhanh chóng</p
+          >
         </div>
       </div>
       <div class="container">
-        <h4>Tiêu đề video</h4>
-        <p-input
-          placeholder="Nhập tiêu đề video"
-          @data="getInputTitle($event)"
-          class="mb-2"
-        />
-        <br>
-        <p-input
-          placeholder="Nhập nội dung"
-          class="mb-2"
-          type="textarea"
-          @data="getInputContent($event)"
-        />
-        <p>
-            <a href="#" class="btn btn-primary m-2" >Cancel</a>
-            <a href="#" class="btn btn-secondary m-2"  @click.prevent="creatAudio()">Next</a>
-        </p>
+        <div class="card card-video">
+          <p class="card-title">Tiêu đề video</p>
+          <p-input
+            placeholder="Nhập tiêu đề video"
+            @data="getInputTitle($event)"
+            class="mb-2"
+          />
+          <br />
+          <p-input
+            placeholder="Nhập nội dung..."
+            class="mb-2"
+            type="textarea"
+            @data="getInputContent($event)"
+          />
+          <p style="padding-left:720px">
+            <a href="#" class="btn btn-secondary m-10">Cancel</a>
+            <a href="#" class="btn btn-primary" @click.prevent="creatAudio()"
+              >Next</a
+            >
+          </p>
+        </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <style>
-    .jumbotron{
-        background-color: white !important;
-    }
+.jumbotron {
+  background-color: white !important;
+}
 </style>
 
 <script>
@@ -73,19 +78,19 @@ export default {
       this.handleUpdateRouteQuery()
     },
 
-    getInputTitle(e){
-        this.title = e
+    getInputTitle(e) {
+      this.title = e
     },
 
-    getInputContent(e){
-        this.content = e
+    getInputContent(e) {
+      this.content = e
     },
 
-    creatAudio(){
-        this.listText = this.content.split(".")
-        this.listText.forEach(element => {
-            console.log(element)
-        });
+    creatAudio() {
+      this.listText = this.content.split('.')
+      this.listText.forEach((element) => {
+        console.log(element)
+      })
     },
   },
 

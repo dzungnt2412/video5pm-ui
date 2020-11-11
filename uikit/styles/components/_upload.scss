@@ -58,21 +58,27 @@ $--color-text-placeholder: #c0c4cc !default;
 }
 
 .el-upload-dragger {
-  background-color: #fff;
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  background: #FAFAFA;
+  border: 1px dashed #B0B3B9;
+  border-radius: 8px;
+  width: 470px;
+  height: 174px;
   box-sizing: border-box;
-  width: 360px;
-  height: 180px;
+  //background-color: #fff;
+  //border: 1px dashed #d9d9d9;
+  //border-radius: 6px;
+  //width: 360px;
+  //height: 180px;
   text-align: center;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 
   .el-icon-upload {
+    width: auto;
     font-size: 67px;
     color: $--color-text-placeholder;
-    margin: 40px 0 16px;
+    margin: 30px 0 12px;
     line-height: 50px;
   }
 
@@ -87,14 +93,20 @@ $--color-text-placeholder: #c0c4cc !default;
   }
 
   .el-upload__text {
-    color: $--color-text-regular;
-    font-size: 14px;
-    text-align: center;
+    font-weight: bold;
+    //font-size: 14px;
+    line-height: 160%;
+    color: #37393E;
 
     em {
-      color: $--color-primary;
+      color: #0554F2;
       font-style: normal;
     }
+  }
+  .el-before-upload__text {
+    font-style: italic;
+    line-height: 160%;
+    color: #B0B3B9;
   }
 
   &:hover {

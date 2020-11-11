@@ -3,10 +3,10 @@
     <div class="page-video">
       <div class="text-center">
         <div class="container">
-          <p class="jumbotron-heading mt-20">Thêm ảnh và video</p>
-          <p class="text-description"
-            >Chuyển bài viết của bạn thành video đơn giản nhanh chóng</p
+          <p class="jumbotron-heading mt-20"
+            >Chúc mừng ! Video của bạn đã hoàn thành</p
           >
+          <p class="text-description">Share it to the world, bro</p>
         </div>
       </div>
       <div class="container">
@@ -14,6 +14,7 @@
           <div class="add-video">
             <video
               class="video"
+              style="width: 100%"
               id="videoElement"
               controls
               poster="velocity-thumbnail.jpg"
@@ -45,43 +46,20 @@
               >
             </video>
 
-            <div class="controls">
-              <p-button class=" btn-play" v-show="paused" @click="play"
-                >&#9654;</p-button
-              >
-              <p-button class=" btn-play" v-show="playing" @click="pause"
-                >&#9208;</p-button
-              >
-            </div>
-            <div class="add">
-              <p-button
-                class="btn btn-primary btn-special"
-                @click="visibleUploadModal"
-                >Thêm video</p-button
-              >
-            </div>
-            <br />
-            <div class="progress">
-              <div class="progress-bar" style="width:70%">70%</div>
-            </div>
-            <br />
-
             <div>
-              <a
-                href="/create-video"
-                class="btn btn-secondary"
-                style="margin-right:600px"
-                >Back</a
+              <a href="/create-video" class="btn btn-secondary m-10"
+                >Customize</a
               >
-              <a href="#" class="btn btn-secondary m-10">Cancel</a>
+              <a href="#" class="btn btn-secondary" style="margin-right:550px"
+                >Share</a
+              >
               <a href="#" class="btn btn-primary" @click.prevent="creatAudio()"
-                >Next</a
+                >Publish</a
               >
             </div>
           </div>
         </div>
       </div>
-      <modal-upload-video :visible.sync="isVisibleUpload"></modal-upload-video>
     </div>
   </div>
 </template>
@@ -89,13 +67,9 @@
 <script>
 import mixinRoute from '@core/mixins/route'
 import mixinTable from '@core/mixins/table'
-import ModalUploadVideo from './components/ModalUploadVideo'
 
 export default {
   mixins: [mixinRoute, mixinTable],
-  components: {
-    ModalUploadVideo,
-  },
   created() {
     this.filter = this.getRouteQuery()
   },
