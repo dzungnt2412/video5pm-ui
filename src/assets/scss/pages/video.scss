@@ -26,9 +26,31 @@
         color: #37393E;
     }
 }
+.add-video {
+    text-align: center;
+    padding: 20px;
+}
 .video {
     text-align: center;
+    margin-bottom: 50px;
 }
-.btn-lg {
-    width: 300px;
+.btn-play {
+    position: absolute;
+    top: 330px;
+    left: 50px;
+    text-align: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #0054f2;
+    outline: none;
+    color: white;
+}
+.btn-secondary {
+    border-radius: 8px;
+    border: none;
+    color: #17191D;
+    background: #DFE3E8;
+}
+.btn-primary {
+    border-radius: 8px;
 }

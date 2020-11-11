@@ -11,8 +11,9 @@
       </div>
       <div class="container">
         <div class="card card-video">
-          <div class="video">
+          <div class="add-video">
             <video
+              class="video"
               id="videoElement"
               controls
               poster="velocity-thumbnail.jpg"
@@ -45,33 +46,59 @@
             </video>
 
             <div class="controls">
-              <button v-show="paused" @click="play">&#9654;</button>
-              <button v-show="playing" @click="pause">&#9208;</button>
+              <p-button class=" btn-play" v-show="paused" @click="play"
+                >&#9654;</p-button
+              >
+              <p-button class=" btn-play" v-show="playing" @click="pause"
+                >&#9208;</p-button
+              >
+            </div>
+            <div class="add">
+              <p-button
+                class="btn btn-primary btn-special"
+                @click="visibleUploadModal"
+                >Thêm video</p-button
+              >
+            </div>
+            <br />
+            <div class="progress">
+              <div class="progress-bar" style="width:70%">70%</div>
+            </div>
+            <br />
+
+            <div>
+              <a href="#" class="btn btn-secondary" style="margin-right:600px"
+                >Back</a
+              >
+              <a href="#" class="btn btn-secondary m-10">Cancel</a>
+              <a href="#" class="btn btn-primary" @click.prevent="creatAudio()"
+                >Next</a
+              >
             </div>
           </div>
         </div>
       </div>
+      <modal-upload-video :visible.sync="isVisibleUpload"></modal-upload-video>
     </div>
   </div>
 </template>
 
-<style>
-.jumbotron {
-  background-color: white !important;
-}
-</style>
-
 <script>
 import mixinRoute from '@core/mixins/route'
 import mixinTable from '@core/mixins/table'
+import ModalUploadVideo from './components/ModalUploadVideo'
 
 export default {
   mixins: [mixinRoute, mixinTable],
+  components: {
+    ModalUploadVideo,
+  },
   created() {
     this.filter = this.getRouteQuery()
   },
   data() {
     return {
+      isVisibleUpload: false,
       videoElement: null,
       paused: null,
     }
@@ -88,6 +115,9 @@ export default {
     pause() {
       this.videoElement.pause()
     },
+    visibleUploadModal() {
+      this.isVisibleUpload = true
+    },
   },
   computed: {
     playing() {
@@ -97,9 +127,7 @@ export default {
 
   watch: {
     filter: {
-      handler: function() {
-        this.handleFetch()
-      },
+      handler: function() {},
       deep: true,
     },
   },
