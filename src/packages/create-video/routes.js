@@ -17,4 +17,13 @@ export const routes = [
     component: () =>
       import(/* webpackChunkName: "containers" */ './views/EditVideo'),
   },
+  {
+    path: '/review-video',
+    name: 'review-video',
+    meta: {
+      title: 'Review Video',
+    },
+    component: () =>
+      import(/* webpackChunkName: "containers" */ './views/ReviewVideo'),
+  },
 ]
