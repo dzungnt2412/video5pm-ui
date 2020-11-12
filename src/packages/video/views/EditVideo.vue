@@ -24,7 +24,7 @@
               @pause="updatePaused"
             >
               <source
-                :src= getVideo.path
+                :src= "videoPreview.path"
                 type="video/mp4"
                 media="all and (max-width:680px)"
               />
@@ -110,7 +110,7 @@ export default {
       let t = this.length/this.totalDuration*100
       return t + "%"
     },
-    getVideo(){
+    videoPreview(){
       return this.videoPreview
     }
 
@@ -138,7 +138,8 @@ export default {
       this.videoPreview = Storage.get("video")
       this.totalDuration = Storage.get("video").length/1000
       this.length = Storage.get("lengthPrevious")
-      this.$router.push('/edit-video')
+      location.reload()
+
     },
     play() {
       this.videoElement.play()
