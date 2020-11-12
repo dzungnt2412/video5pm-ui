@@ -19,7 +19,7 @@ export const http = {
       const apiUrl =
         url.indexOf('http') === 0
           ? url
-          : `${"http://localhost:8888"}${url}`
+          : `${"http://188.166.215.121:8888"}${url}`
       const type = isString(options)
         ? options
         : options.type || RESPONSE_TYPE_JSON

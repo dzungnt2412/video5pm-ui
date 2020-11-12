@@ -23,22 +23,9 @@
               @pause="updatePaused"
             >
               <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-Mobile.mp4"
+                :src= videoPreview.path
                 type="video/mp4"
                 media="all and (max-width:680px)"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-Mobile.webm"
-                type="video/webm"
-                media="all and (max-width:680px)"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-SD.mp4"
-                type="video/mp4"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-SD.webm"
-                type="video/webm"
               />
               <p
                 >Sorry, there's a problem playing this video. Please try using a
@@ -47,14 +34,14 @@
             </video>
 
             <div>
-              <a href="/create-video" class="btn btn-secondary m-10"
+              <a href="/edit-video" class="btn btn-secondary m-10"
                 >Customize</a
               >
               <a href="#" class="btn btn-secondary" style="margin-right:550px"
                 >Share</a
               >
-              <a href="#" class="btn btn-primary" @click.prevent="creatAudio()"
-                >Publish</a
+              <a href="/create-video" class="btn btn-primary"
+                >Create new video</a
               >
             </div>
           </div>
@@ -66,18 +53,15 @@
 
 <script>
 import mixinRoute from '@core/mixins/route'
-import mixinTable from '@core/mixins/table'
+import Storage from '@core/helpers/storage'
 
 export default {
-  mixins: [mixinRoute, mixinTable],
-  created() {
-    this.filter = this.getRouteQuery()
-  },
+  mixins: [mixinRoute],
   data() {
     return {
-      isVisibleUpload: false,
       videoElement: null,
       paused: null,
+      videoPreview : Storage.get("video"),
     }
   },
 
@@ -99,13 +83,6 @@ export default {
   computed: {
     playing() {
       return !this.paused
-    },
-  },
-
-  watch: {
-    filter: {
-      handler: function() {},
-      deep: true,
     },
   },
 }

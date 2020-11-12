@@ -1,6 +1,5 @@
 <template>
-  <PageDetailLoading v-if="isFetching"></PageDetailLoading>
-  <div v-else>
+  <div>
     <div class="page-video">
       <div class="text-center">
         <div class="container">
@@ -25,7 +24,7 @@
               @pause="updatePaused"
             >
               <source
-                :src= videoPreview.path
+                :src= getVideo.path
                 type="video/mp4"
                 media="all and (max-width:680px)"
               />
@@ -46,6 +45,7 @@
             <div class="add">
               <p-button
                 class="btn btn-primary btn-special"
+                :loading="isFetching"
                 @click="visibleUploadModal"
                 >Thêm video</p-button
               >
@@ -64,7 +64,7 @@
                 >Back</a
               >
               <a href="#" class="btn btn-secondary m-10">Cancel</a>
-              <a href="#" class="btn btn-primary" @click.prevent="creatAudio()"
+              <a href="/review-video" class="btn btn-primary" 
                 >Next</a
               >
             </div>
@@ -109,6 +109,9 @@ export default {
       console.log(this.length/this.totalDuration*100)
       let t = this.length/this.totalDuration*100
       return t + "%"
+    },
+    getVideo(){
+      return this.videoPreview
     }
 
   },
@@ -118,9 +121,10 @@ export default {
       isVisibleUpload: false,
       videoElement: null,
       paused: null,
-      videoPreview: Storage.get("video"),
-      totalDuration: Storage.get("video").length/1000,
-      length: Storage.get("lengthPrevious"),
+      videoPreview : Storage.get("video"),
+      totalDuration : Storage.get("video").length/1000,
+      length : Storage.get("lengthPrevious"),
+
     }
   },
 
@@ -129,6 +133,12 @@ export default {
     updatePaused(event) {
       this.videoElement = event.target
       this.paused = event.target.paused
+    },
+    init(){
+      this.videoPreview = Storage.get("video")
+      this.totalDuration = Storage.get("video").length/1000
+      this.length = Storage.get("lengthPrevious")
+      this.$router.push('/edit-video')
     },
     play() {
       this.videoElement.play()
@@ -141,6 +151,7 @@ export default {
     },
     async handlerUpload(length, file){
       console.log(length)
+      this.isVisibleUpload = false
 
       this.isFetching = true
       let formData = new FormData()
@@ -160,8 +171,9 @@ export default {
       this.videoPreview = this.video
       let lengthPrevious =  Storage.get("lengthPrevious") == null ? 0 : (Storage.get("lengthPrevious") + length)
       Storage.set("lengthPrevious", lengthPrevious)
-      this.isVisibleUpload = false
+      
       this.isFetching = false
+      this.init()
     },
   },
 

@@ -1,6 +1,5 @@
 <template>
-  <PageDetailLoading v-if="isFetching"></PageDetailLoading>
-  <div v-else>
+  <div >
     <div class="page-video">
       <div class="text-center">
         <div class="container">
@@ -25,12 +24,22 @@
             type="textarea"
             v-model="content"
           />
-          <p style="padding-left:720px">
-                        <a href="#" class="btn btn-secondary m-10">Cancel</a>
-            <a href="#" class="btn btn-primary" @click.prevent="createVideo()"
-              >Next</a
+          <div class="d-flex flex-row-reverse">
+            <p-button
+              class=" ml-10 mt-30 btn btn-primary"
+              :loading="isFetching"
+              @click="createVideo"
             >
-          </p>
+              Next
+            </p-button>
+            <p-button
+              class="ml-10 mt-30 btn btn-secondary"
+              @click="Cancel"
+            >
+              Cancel
+            </p-button>
+
+          </div>
         </div>
       </div>
     </div>
@@ -41,6 +50,7 @@
 .jumbotron {
   background-color: white !important;
 }
+
 </style>
 
 <script>
@@ -74,7 +84,6 @@ export default {
       Storage.set("video", null)
       Storage.set("lengthPrevious", 0)
       this.isFetching = true
-      console.log(this.title)
       if (this.title == "" || this.content == "") {
         this.$toast.open({
           type: 'error',

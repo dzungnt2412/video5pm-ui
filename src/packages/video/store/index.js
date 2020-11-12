@@ -42,9 +42,10 @@ export const actions = {
     let result = { success: true }
     let response = await api.creatVideoPreview(payload)
 
-    if (!response || response.message) {
+    if (!response || response.message ||!response.video) {
       result = { success: false, message: response.message }
       response = { video: {} }
+      return result
     }
 
     commit(CREATE_VIDEO_PREVIEW, response.video)
@@ -60,7 +61,7 @@ export const actions = {
     let result = { success: true }
     let response = await api.uploadVideo(payload)
 
-    if (!response || response.message ) {
+    if (!response || response.message || !response.video ) {
       result = { success: false, message: response.message }
       response = { video: {} }
       return result

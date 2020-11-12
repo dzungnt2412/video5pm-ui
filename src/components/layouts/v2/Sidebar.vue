@@ -47,7 +47,7 @@ export default {
         {
           title: 'Home',
           icon: 'dashboard',
-          route: '/',
+          route: { name: 'dashboard' },
         },
         {
           title: 'Create video',
@@ -57,12 +57,12 @@ export default {
         {
           title: 'My video',
           icon: 'list',
-          route: { name: 'order-list' },
+          route: { name: 'review-video' },
         },
         {
           title: 'Pricing',
           icon: 'payment',
-          route: { name: 'design-list' },
+          route: { name: 'dashboard' },
         },
         // TODO: uncomment me
         // {
