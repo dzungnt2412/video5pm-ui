@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <PageDetailLoading v-if="isFetching"></PageDetailLoading>
+  <div v-else>
     <div class="page-video">
       <div class="text-center">
         <div class="container">
@@ -16,28 +17,17 @@
               class="video"
               id="videoElement"
               controls
+              style=" width: 460px;height: 270px;
+"
               poster="velocity-thumbnail.jpg"
               @canplay="updatePaused"
               @playing="updatePaused"
               @pause="updatePaused"
             >
               <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-Mobile.mp4"
+                :src= videoPreview.path
                 type="video/mp4"
                 media="all and (max-width:680px)"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-Mobile.webm"
-                type="video/webm"
-                media="all and (max-width:680px)"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-SD.mp4"
-                type="video/mp4"
-              />
-              <source
-                src="https://s3-ap-northeast-1.amazonaws.com/daniemon/demos/Velocity-SD.webm"
-                type="video/webm"
               />
               <p
                 >Sorry, there's a problem playing this video. Please try using a
@@ -62,7 +52,7 @@
             </div>
             <br />
             <div class="progress">
-              <div class="progress-bar" style="width:70%">70%</div>
+              <div class="progress-bar" v-bind:style="{ width: getLength}">{{ length }}</div>
             </div>
             <br />
 
@@ -81,33 +71,61 @@
           </div>
         </div>
       </div>
-      <modal-upload-video :visible.sync="isVisibleUpload"></modal-upload-video>
+      <modal-upload-video 
+        :visible.sync="isVisibleUpload"
+        @upload="handlerUpload"
+      ></modal-upload-video>
     </div>
   </div>
 </template>
 
+<style>
+ video{
+   border: solid 1px black;
+ }
+</style>
+
 <script>
 import mixinRoute from '@core/mixins/route'
-import mixinTable from '@core/mixins/table'
 import ModalUploadVideo from './components/ModalUploadVideo'
+import { UPLOAD_VIDEO, } from '../store'
+import {  mapState, mapActions } from 'vuex'
+import Storage from '@core/helpers/storage'
 
 export default {
-  mixins: [mixinRoute, mixinTable],
+  mixins: [mixinRoute],
   components: {
     ModalUploadVideo,
   },
-  created() {
-    this.filter = this.getRouteQuery()
+  computed:{
+    
+    ...mapState('video', {
+      video: (state) => state.video,
+    }),
+    playing() {
+      return !this.paused
+    },
+    getLength(){
+      console.log(this.length/this.totalDuration*100)
+      let t = this.length/this.totalDuration*100
+      return t + "%"
+    }
+
   },
   data() {
     return {
+      isFetching: false,
       isVisibleUpload: false,
       videoElement: null,
       paused: null,
+      videoPreview: Storage.get("video"),
+      totalDuration: Storage.get("video").length/1000,
+      length: Storage.get("lengthPrevious"),
     }
   },
 
   methods: {
+    ...mapActions('video', [UPLOAD_VIDEO,]),
     updatePaused(event) {
       this.videoElement = event.target
       this.paused = event.target.paused
@@ -121,18 +139,31 @@ export default {
     visibleUploadModal() {
       this.isVisibleUpload = true
     },
-  },
-  computed: {
-    playing() {
-      return !this.paused
+    async handlerUpload(length, file){
+      console.log(length)
+
+      this.isFetching = true
+      let formData = new FormData()
+      formData.append('video_id', this.videoPreview.id)
+      formData.append('length', length)
+      formData.append('file', file)
+
+      const result = await this.uploadVideo(formData)
+
+      if (!result.success) {
+        this.$toast.open({ message: result.message, type: 'error' })
+        this.isFetching = false
+        return
+      }
+
+      Storage.set("video", this.video)
+      this.videoPreview = this.video
+      let lengthPrevious =  Storage.get("lengthPrevious") == null ? 0 : (Storage.get("lengthPrevious") + length)
+      Storage.set("lengthPrevious", lengthPrevious)
+      this.isVisibleUpload = false
+      this.isFetching = false
     },
   },
 
-  watch: {
-    filter: {
-      handler: function() {},
-      deep: true,
-    },
-  },
 }
 </script>

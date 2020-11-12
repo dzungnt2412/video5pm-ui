@@ -56,7 +56,7 @@ export default {
         },
         {
           title: 'My video',
-          icon: 'report',
+          icon: 'list',
           route: { name: 'order-list' },
         },
         {

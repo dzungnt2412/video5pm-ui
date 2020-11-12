@@ -1,9 +1,12 @@
+import { noAuthRequired } from '@core/router/helpers'
 export const routes = [
   {
     path: '/create-video',
     name: 'create-video',
     meta: {
       title: 'Create Video',
+      ...noAuthRequired(),
+
     },
     component: () =>
       import(/* webpackChunkName: "containers" */ './views/CreateVideo'),
@@ -13,6 +16,7 @@ export const routes = [
     name: 'edit-video',
     meta: {
       title: 'Edit Video',
+      ...noAuthRequired(),
     },
     component: () =>
       import(/* webpackChunkName: "containers" */ './views/EditVideo'),
@@ -22,6 +26,7 @@ export const routes = [
     name: 'review-video',
     meta: {
       title: 'Review Video',
+      ...noAuthRequired(),
     },
     component: () =>
       import(/* webpackChunkName: "containers" */ './views/ReviewVideo'),
