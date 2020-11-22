@@ -3,23 +3,23 @@
     <div class="page-video">
       <div class="text-center">
         <div class="container">
-          <p class="jumbotron-heading mt-80">Nhập nội dung</p>
+          <p class="jumbotron-heading mt-80">Import content</p>
           <p class="text-description"
-            >Chuyển bài viết của bạn thành video đơn giản nhanh chóng</p
+            >Turn your articles into video fast and simple</p
           >
         </div>
       </div>
       <div class="container">
         <div class="card card-video">
-          <p class="card-title">Tiêu đề video</p>
+          <p class="card-title">Video title</p>
           <p-input
-            placeholder="Nhập tiêu đề video"
+            placeholder="Import video title"
             class="mb-2"
             v-model="title"
           />
           <br />
           <p-input
-            placeholder="Nhập nội dung..."
+            placeholder="Import content..."
             class="mb-2"
             type="textarea"
             v-model="content"

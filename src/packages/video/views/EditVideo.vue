@@ -3,9 +3,9 @@
     <div class="page-video">
       <div class="text-center">
         <div class="container">
-          <p class="jumbotron-heading mt-20">Thêm ảnh và video</p>
+          <p class="jumbotron-heading mt-20">Add pictures and audio</p>
           <p class="text-description"
-            >Chuyển bài viết của bạn thành video đơn giản nhanh chóng</p
+            >Turn your articles into video fast and simple</p
           >
         </div>
       </div>
@@ -34,27 +34,20 @@
               >
             </video>
 
-            <div class="controls">
-              <p-button class=" btn-play" v-show="paused" @click="play"
-                >&#9654;</p-button
-              >
-              <p-button class=" btn-play" v-show="playing" @click="pause"
-                >&#9208;</p-button
-              >
-            </div>
-            <div class="add">
-              <p-button
-                class="btn btn-primary btn-special"
-                :loading="isFetching"
-                @click="visibleUploadModal"
-                >Thêm video</p-button
-              >
-            </div>
             <br />
             <div class="progress">
               <div class="progress-bar" v-bind:style="{ width: getLength}">{{ length }}</div>
             </div>
             <br />
+            <div class="add">
+              <p-button
+                class="btn btn-primary btn-special"
+                :loading="isFetching"
+                @click="visibleUploadModal"
+                >Add video</p-button
+              >
+            </div>
+
 
             <div>
               <a
